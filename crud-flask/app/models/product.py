@@ -8,9 +8,9 @@ class Product(Base):
 
     id = mapped_column(Integer, primary_key=True, autoincrement=True)
     name = mapped_column(String(100), nullable=False)
-    price = mapped_column(Integer)
-    description = mapped_column(Text)
-    created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
+    price = mapped_column(Integer, nullable=False)
+    description = mapped_column(Text, nullable=True)
+    created_at = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     def __repr__(self):
         return f'<Product id={self.id}, name={self.name}, price={self.price}>'
