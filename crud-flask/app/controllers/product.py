@@ -5,6 +5,7 @@ from app.models.product import Product
 from flask_login import login_required, current_user
 from sqlalchemy import select, or_
 from sqlalchemy.exc import SQLAlchemyError
+from datetime import datetime
 
 product_routes = Blueprint('product_routes', __name__)
 
@@ -58,26 +59,27 @@ def get_product(id):
 @product_routes.route('/products', methods=['POST'])
 @jwt_required()
 def create_product():
-    session = Session()
-    session.begin()
-    
     try:
+        data = request.json
         new_product = Product(
-            name=request.form['name'],
-            price=request.form['price'],
-            description=request.form['description']
+            name=data['name'],
+            price=data['price'],
+            description=data['description'],
+            created_at=datetime.now()
         )
-        
-        session.add(new_product)
-        session.commit()
+
+        with Session() as session:
+            session.add(new_product)
+            session.commit()
+
         return jsonify({'message': 'Product created successfully'}), 201
     
-    except (KeyError, SQLAlchemyError) as e:
-        session.rollback()
-        return jsonify({'message': 'Error creating product: ' + str(e)}), 500
+    except KeyError as e:
+        return jsonify({'message': f'Missing key in JSON data: {str(e)}'}), 400
     
-    finally:
-        session.close()
+    except SQLAlchemyError as e:
+        return jsonify({'message': 'Error creating product: ' + str(e)}), 500
+
 
 @product_routes.route('/products/<id>', methods=['PUT'])
 @jwt_required()
@@ -89,15 +91,17 @@ def update_product(id):
                 return jsonify({'message': 'Product not found'}), 404
             
             data = request.json
-            product.name = data.get('productName', product.name)
-            product.price = data.get('productPrice', product.price)
-            product.description = data.get('productDescription', product.description)
+            # Use correct keys to access the data from the request JSON object
+            product.name = data.get('name', product.name)
+            product.price = data.get('price', product.price)
+            product.description = data.get('description', product.description)
             
             session.commit()
             return jsonify({'message': 'Product updated successfully'}), 200
     
     except SQLAlchemyError as e:
         return jsonify({'message': 'Error updating product: ' + str(e)}), 500
+
 
 @product_routes.route('/products/<id>', methods=['DELETE'])
 @jwt_required()
