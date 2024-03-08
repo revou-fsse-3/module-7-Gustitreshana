@@ -1,8 +1,7 @@
 from app.models.base import Base
 from sqlalchemy import Integer, String, Text, DateTime
-from sqlalchemy.orm import mapped_column
 from sqlalchemy.sql import func
-
+from sqlalchemy.orm import mapped_column
 
 class Product(Base):
     __tablename__ = 'product'
@@ -14,4 +13,4 @@ class Product(Base):
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     def __repr__(self):
-        return f'<Product {self.name}>'
+        return f'<Product id={self.id}, name={self.name}, price={self.price}>'
