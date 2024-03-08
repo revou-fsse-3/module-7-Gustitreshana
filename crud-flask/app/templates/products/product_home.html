@@ -248,19 +248,22 @@
 
     function submitForm() {
       let request_data = {
-        name: $('#productName').val(),
-        price: $('#productPrice').val(),
-        description: $('#productDescription').val()
+        productName: $('#productName').val(),
+        productPrice: $('#productPrice').val(),
+        productDescription: $('#productDescription').val()
       }
 
       $.ajax({
         url: form_url,
-        data: request_data,
+        data: JSON.stringify(request_data),
+        contentType: 'application/json',
         method: form_method
       }).done(function (response) {
         alert(response.message);
         location.reload();
-      })
+      }).fail(function (jqXHR, textStatus, errorThrown) {
+        alert('Error: ' + jqXHR.responseText);
+      });
     }
 
     function closeNewProductForm() {
