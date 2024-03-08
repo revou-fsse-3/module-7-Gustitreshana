@@ -47,10 +47,31 @@
       border-radius: 5px;
       padding: 8px 16px;
       cursor: pointer;
+      text-decoration: none; /* Remove underline */
     }
 
     button:hover {
       background-color: #0056b3;
+    }
+
+    .delete-button,
+    .review-button,
+    .edit-button {
+      padding: 6px 12px; /* Adjust padding to make the buttons smaller */
+      color: #333; /* Improved text color for better readability */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px; /* Decrease font size */
+      text-decoration: none; /* Remove underline */
+    }
+
+    .delete-button {
+      background-color: #ff0000; /* Red color */
+    }
+
+    .review-button {
+      background-color: #ffd700; /* Yellow color */
     }
 
     table {
@@ -72,7 +93,7 @@
     }
 
     tr:nth-child(even) {
-      background-color: #4b0082;
+      background-color: #2e004f;
     }
 
     .search-container {
@@ -130,13 +151,10 @@
     }
 
     #newProductForm button {
-      width: 48%;
-      margin-right: 2%;
+      width: 100%; /* Make buttons full width */
+      margin-bottom: 10px; /* Add margin to separate buttons */
     }
 
-    #newProductForm button:last-child {
-      margin-right: 0;
-    }
   </style>
 </head>
 
@@ -171,9 +189,9 @@
           <td id="price_{{ product.id }}">{{ product.price }}</td>
           <td id="desc_{{ product.id }}">{{ product.description }}</td>
           <td>
-            <a href="{{ url_for('product_routes.get_product', id=product.id) }}">Review</a>
-            <button onclick="openEditProductForm(this)" id="edit_{{ product.id }}">Edit</button>
-            <button onclick="deleteProduct(this)" id="delete_{{ product.id }}">Delete</button>
+            <a href="{{ url_for('product_routes.get_product', id=product.id) }}" class="review-button">Review</a>
+            <button onclick="openEditProductForm(this)" id="edit_{{ product.id }}" class="edit-button">Edit</button>
+            <button onclick="deleteProduct(this)" id="delete_{{ product.id }}" class="delete-button">Delete</button>
           </td>
         </tr>
         {% endfor %}
@@ -213,26 +231,26 @@
       document.getElementById("productForm").reset();
     }
 
-    function submitForm(){
-            let request_data = {
-                name: $('#productName').val(),
-                price: $('#productPrice').val(),
-                description: $('#productDescription'). val()
-            }
+    function submitForm() {
+      let request_data = {
+        name: $('#productName').val(),
+        price: $('#productPrice').val(),
+        description: $('#productDescription').val()
+      }
 
-            $.ajax({
-                url: form_url,
-                data: request_data,
-                method: form_method
-            }).done(function(response){
-                alert(response.message);
-                location.reload();
-            })
-        }
-    
-        function closeNewProductForm() {
-            document.getElementById("newProductForm").style.display = "none";
-        }
+      $.ajax({
+        url: form_url,
+        data: request_data,
+        method: form_method
+      }).done(function (response) {
+        alert(response.message);
+        location.reload();
+      })
+    }
+
+    function closeNewProductForm() {
+      document.getElementById("newProductForm").style.display = "none";
+    }
 
     function openEditProductForm(button) {
       let selected_product_id = button.id.split("_")[1];
@@ -250,18 +268,18 @@
       document.getElementById("newProductForm").style.display = "block";
     }
 
-    function deleteProduct(button){
-            var selected_product_id = button.id.split("_")[1];
-            var delete_url = base_url + "/" + selected_product_id
+    function deleteProduct(button) {
+      var selected_product_id = button.id.split("_")[1];
+      var delete_url = base_url + "/" + selected_product_id
 
-            $.ajax({
-                url: delete_url,
-                method: "DELETE"
-            }).done(function(response){
-                alert(response.message);
-                location.reload();
-            })
-        }
+      $.ajax({
+        url: delete_url,
+        method: "DELETE"
+      }).done(function (response) {
+        alert(response.message);
+        location.reload();
+      })
+    }
 
 
   </script>
