@@ -7,11 +7,11 @@ password = os.getenv('DATABASE_PASSWORD')
 host = os.getenv('DATABASE_URL')
 database = os.getenv('DATABASE_NAME')
 
-# connect to the database
+# Connect to the database
 print(f'Connecting to the MySQL Database at {host}')
 engine = create_engine(f'mysql+mysqlconnector://{username}:{password}@{host}/{database}')
 
-# test the connection
+# Test the connection
 connection = engine.connect()
-Session = sessionmaker(connection)
+Session = sessionmaker(bind=engine)
 print(f'Connected to the MySQL Database at {host}')
