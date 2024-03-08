@@ -47,7 +47,8 @@
       border-radius: 5px;
       padding: 8px 16px;
       cursor: pointer;
-      text-decoration: none; /* Remove underline */
+      text-decoration: none;
+      /* Remove underline */
     }
 
     button:hover {
@@ -57,22 +58,47 @@
     .delete-button,
     .review-button,
     .edit-button {
-      padding: 6px 12px; /* Adjust padding to make the buttons smaller */
-      color: #333; /* Improved text color for better readability */
+      padding: 6px 12px;
+      /* Adjust padding to make the buttons smaller */
+      color: #333;
+      /* Improved text color for better readability */
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 14px; /* Decrease font size */
-      text-decoration: none; /* Remove underline */
+      font-size: 14px;
+      /* Decrease font size */
+      text-decoration: none;
+      /* Remove underline */
     }
 
     .delete-button {
-      background-color: #ff0000; /* Red color */
+      background-color: #ff0000;
+      /* Red color */
     }
 
     .review-button {
-      background-color: #ffd700; /* Yellow color */
+      background-color: #ffd700;
+      /* Yellow color */
     }
+
+    .cancel-button {
+      background-color: #ff0000;
+      /* Red color */
+      color: #fff;
+      /* White text color */
+      border: none;
+      border-radius: 5px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .cancel-button:hover {
+      background-color: #cc0000;
+      /* Darker red color on hover */
+    }
+
 
     table {
       width: 100%;
@@ -151,10 +177,11 @@
     }
 
     #newProductForm button {
-      width: 100%; /* Make buttons full width */
-      margin-bottom: 10px; /* Add margin to separate buttons */
+      width: 100%;
+      /* Make buttons full width */
+      margin-bottom: 10px;
+      /* Add margin to separate buttons */
     }
-
   </style>
 </head>
 
@@ -207,7 +234,7 @@
         <label for="productDescription">Description:</label><br>
         <textarea id="productDescription" name="productDescription" rows="4" cols="50"></textarea><br><br>
         <button type="button" onclick="submitForm()">Submit</button>
-        <button type="button" onclick="closeNewProductForm()">Cancel</button>
+        <button type="button" onclick="closeNewProductForm()" class="cancel-button">Cancel</button>
       </form>
     </div>
   </div>
