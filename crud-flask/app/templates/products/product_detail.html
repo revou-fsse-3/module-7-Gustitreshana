@@ -5,17 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Reviews</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        div.product-info {
+            background-color: #f2f2f2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h3 {
+            color: #343a40;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #495057;
+            margin: 5px 0;
+        }
         table {
             border-collapse: collapse;
             width: 100%;
+            margin-top: 20px;
         }
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 12px;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #007bff;
+            color: #fff;
         }
         tr:nth-child(even) {
             background-color: #f2f2f2;
@@ -23,36 +63,38 @@
     </style>
 </head>
 <body>
-    <h2>Product Details</h2>
-    <a href="{{ url_for('product_routes.get_products') }}">Back</a>
+    <div class="container">
+        <h2>Product Details</h2>
+        <a href="{{ url_for('product_routes.get_products') }}">Back</a>
 
-    <div>
-        <h3>Product Name: {{ response_data['product'].name }}</h3>
-        <p>Price: {{ response_data['product'].price }}</p>
-        <p>Rating: {{ response_data['product'].average_rating }}</p>
+        <div class="product-info">
+            <h3>Product Name: {{ response_data['product'].name }}</h3>
+            <p>Price: {{ response_data['product'].price }}</p>
+            <p>Rating: {{ response_data['product'].average_rating }}</p>
+        </div>
+
+        <h2>Product Reviews</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Rating</th>
+                    <th>Review Content</th>
+                    <th>Created Datetime</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in response_data['product'].reviews %}
+                <tr>
+                    <td>{{ review.email }}</td>
+                    <td>{{ review.rating }}</td>
+                    <td>{{ review.review_content }}</td>
+                    <td>{{ review.created_at }}</td>
+                </tr>
+                {% endfor %}
+                <!-- Add more <tr> elements for additional reviews -->
+            </tbody>
+        </table>
     </div>
-
-    <h2>Product Reviews</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>Rating</th>
-                <th>Review Content</th>
-                <th>Created Datetime</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for review in response_data['product'].reviews %}
-            <tr>
-                <td>{{ review.email }}</td>
-                <td>{{ review.rating }}</td>
-                <td>{{ review.review_content }}</td>
-                <td>{{ review.created_at }}</td>
-            </tr>
-            {% endfor %}
-            <!-- Add more <tr> elements for additional reviews -->
-        </tbody>
-    </table>
 </body>
 </html>
