@@ -12,9 +12,10 @@ product_routes = Blueprint('product_routes', __name__)
 @jwt_required()
 def get_products():
     response_data = dict()
-    session = Session()
+    current_user = get_jwt_identity()
     
     try:
+        session = Session()
         product_query = select(Product)
         
         if request.args.get('query') != None:
@@ -24,10 +25,13 @@ def get_products():
         products = session.execute(product_query)
         products = products.scalars()
         response_data['products'] = products
-        response_data['username'] = get_jwt_identity()
+        response_data['username'] = current_user
         
     except SQLAlchemyError as e:
         response_data['message'] = 'Error getting products: ' + str(e)
+        
+    finally:
+        session.close()
         
     return render_template('products/product_home.html', response_data=response_data)
 
@@ -45,6 +49,9 @@ def get_product(id):
         
     except SQLAlchemyError as e:
         response_data['message'] = 'Error getting product: ' + str(e)
+        
+    finally:
+        session.close()
         
     return render_template('products/product_detail.html', response_data=response_data)
 
@@ -68,30 +75,29 @@ def create_product():
     except (KeyError, SQLAlchemyError) as e:
         session.rollback()
         return jsonify({'message': 'Error creating product: ' + str(e)}), 500
+    
+    finally:
+        session.close()
 
 @product_routes.route('/products/<id>', methods=['PUT'])
 @jwt_required()
 def update_product(id):
-    session = Session()
-    session.begin()
-    
     try:
-        product = session.query(Product).filter(Product.id == id).first()
-        if not product:
-            return jsonify({'message': 'Product not found'}), 404
-        
-        data = request.json
-        product.name = data.get('productName', product.name)
-        product.price = data.get('productPrice', product.price)
-        product.description = data.get('productDescription', product.description)
-        
-        session.commit()
-        return jsonify({'message': 'Product updated successfully'}), 200
+        with Session() as session:
+            product = session.query(Product).filter(Product.id == id).first()
+            if not product:
+                return jsonify({'message': 'Product not found'}), 404
+            
+            data = request.json
+            product.name = data.get('productName', product.name)
+            product.price = data.get('productPrice', product.price)
+            product.description = data.get('productDescription', product.description)
+            
+            session.commit()
+            return jsonify({'message': 'Product updated successfully'}), 200
     
     except SQLAlchemyError as e:
-        session.rollback()
         return jsonify({'message': 'Error updating product: ' + str(e)}), 500
-
 
 @product_routes.route('/products/<id>', methods=['DELETE'])
 @jwt_required()
@@ -111,3 +117,6 @@ def delete_product(id):
     except SQLAlchemyError as e:
         session.rollback()
         return jsonify({'message': 'Error deleting product: ' + str(e)}), 500
+    
+    finally:
+        session.close()
