@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 user_routes = Blueprint('user_routes', __name__)
 
-# Session = sessionmaker(bind=engine)
+Session = sessionmaker(bind=engine)
 
 @user_routes.route('/register', methods=['GET'])
 def get_register_form():
