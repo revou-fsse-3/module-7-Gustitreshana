@@ -61,7 +61,7 @@
 <div class="card">
   <h2>Register</h2>
   <form id="registerForm">
-    <input type="text" name="name" placeholder="Name" required><br>
+    <input type="text" name="username" placeholder="Username" required><br> <!-- Modified: Changed 'name' to 'username' -->
     <input type="email" name="email" placeholder="Email" required><br>
     <input type="password" name="password" placeholder="Password" required><br>
     <button type="button" id="registerButton">Register</button>
@@ -69,11 +69,18 @@
 </div>
 <script>
   document.getElementById("registerButton").addEventListener("click", function() {
-    var formData = new FormData(document.getElementById("registerForm"));
-    
+    var formData = {
+      username: document.getElementsByName("username")[0].value,
+      email: document.getElementsByName("email")[0].value,
+      password: document.getElementsByName("password")[0].value
+    };
+
     fetch('/register', {
       method: 'POST',
-      body: formData
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
     })
     .then(response => response.json())
     .then(data => {
