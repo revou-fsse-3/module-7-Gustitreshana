@@ -1,30 +1,20 @@
 from dotenv import load_dotenv
+import os
 from flask import Flask
+from flask_jwt_extended import JWTManager
+from sqlalchemy.orm import sessionmaker
 from app.controllers.user import user_routes
 from app.controllers.product import product_routes
 from app.models.user import User
 from app.connectors.mysql_connector import engine
-from sqlalchemy.orm import sessionmaker
-from flask_login import LoginManager
-
-import os
 
 load_dotenv()
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-@login_manager.user_loader
-def load_user(user_id):
-    connection = engine.connect()
-    Session = sessionmaker(connection)
-    session = Session()
-    
-    return session.query(User).get(int(user_id))
+jwt = JWTManager(app)
 
 app.register_blueprint(user_routes)
 app.register_blueprint(product_routes)
@@ -32,4 +22,3 @@ app.register_blueprint(product_routes)
 @app.route('/')
 def my_app():
     return 'Hello World!'
-
