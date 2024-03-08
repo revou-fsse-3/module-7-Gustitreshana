@@ -21,6 +21,10 @@ def user_register():
     session = None
 
     try:
+        # Check content type of the request
+        if request.headers['Content-Type'] != 'application/json':
+            return jsonify({'message': 'Content-Type must be application/json'}), 415
+
         data = request.json
         username = data.get('username')
         email = data.get('email')
