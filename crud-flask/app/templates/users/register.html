@@ -42,7 +42,7 @@
     box-sizing: border-box;
   }
 
-  .card input[type="submit"] {
+  .card button[type="button"] {
     width: 100%;
     padding: 10px;
     border: none;
@@ -52,7 +52,7 @@
     cursor: pointer;
   }
 
-  .card input[type="submit"]:hover {
+  .card button[type="button"]:hover {
     background-color: #5d2d8a;
   }
 </style>
@@ -60,12 +60,29 @@
 <body>
 <div class="card">
   <h2>Register</h2>
-  <form action="{{ url_for('user_routes.get_users') }}" method="POST">
+  <form id="registerForm">
     <input type="text" name="name" placeholder="Name" required><br>
     <input type="email" name="email" placeholder="Email" required><br>
     <input type="password" name="password" placeholder="Password" required><br>
-    <input type="submit" value="Register">
+    <button type="button" id="registerButton">Register</button>
   </form>
 </div>
+<script>
+  document.getElementById("registerButton").addEventListener("click", function() {
+    var formData = new FormData(document.getElementById("registerForm"));
+    
+    fetch('/register', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert(data.message);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+</script>
 </body>
 </html>
